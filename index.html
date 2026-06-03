@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0B0F17">
+  <title>Mente Organizada | Organize sua mente. Controle seu dinheiro.</title>
+  <meta name="description" content="App simples para acompanhar entradas, saídas, valores guardados, metas e objetivos semanais em um só lugar.">
+  <style>
+    :root {
+      --bg: #0b0f17;
+      --bg-soft: #0f1421;
+      --card: #111827;
+      --card-2: #151b2b;
+      --line: rgba(255,255,255,.10);
+      --line-strong: rgba(255,255,255,.18);
+      --text: #f9fafb;
+      --muted: #9ca3af;
+      --muted-2: #cbd5e1;
+      --purple: #8b5cf6;
+      --purple-2: #a78bfa;
+      --blue: #3b82f6;
+      --green: #22c55e;
+      --red: #ef4444;
+      --gold: #facc15;
+      --shadow: 0 24px 70px rgba(0,0,0,.38);
+      --grad: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+      --grad-soft: linear-gradient(135deg, rgba(139,92,246,.22), rgba(59,130,246,.10));
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; background: var(--bg); }
+    body {
+      margin: 0;
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(139,92,246,.22), transparent 34rem),
+        radial-gradient(circle at top right, rgba(59,130,246,.16), transparent 32rem),
+        linear-gradient(180deg, #0b0f17 0%, #080b12 100%);
+      line-height: 1.55;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    .container { width: min(1120px, calc(100% - 36px)); margin: 0 auto; }
+    .section { padding: 74px 0; }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(11,15,23,.78);
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      backdrop-filter: blur(18px);
+    }
+    .nav-inner {
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 850;
+      letter-spacing: 0;
+    }
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: var(--grad);
+      box-shadow: 0 12px 30px rgba(139,92,246,.35);
+      font-size: 20px;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-links a {
+      color: var(--muted-2);
+      font-size: 14px;
+      font-weight: 700;
+      padding: 10px 12px;
+      border-radius: 999px;
+    }
+    .nav-links a:hover { background: rgba(255,255,255,.06); color: var(--text); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 13px 18px;
+      border-radius: 14px;
+      font-weight: 850;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: transform .2s ease, filter .2s ease, border-color .2s ease;
+      white-space: nowrap;
+    }
+    .btn:hover { transform: translateY(-1px); filter: brightness(1.08); }
+    .btn-primary {
+      color: white;
+      background: var(--grad);
+      box-shadow: 0 16px 34px rgba(59,130,246,.28);
+    }
+    .btn-secondary {
+      color: var(--text);
+      background: rgba(255,255,255,.06);
+      border-color: var(--line);
+    }
+    .btn-gold {
+      color: #10131a;
+      background: linear-gradient(135deg, #facc15 0%, #fcd34d 100%);
+      box-shadow: 0 14px 36px rgba(250,204,21,.22);
+    }
+
+    .hero {
+      padding: 86px 0 74px;
+      position: relative;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.02fr) minmax(320px, .98fr);
+      align-items: center;
+      gap: 42px;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 32px;
+      padding: 7px 11px;
+      border: 1px solid rgba(139,92,246,.34);
+      border-radius: 999px;
+      color: #ddd6fe;
+      background: rgba(139,92,246,.12);
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      font-size: clamp(42px, 6vw, 76px);
+      line-height: .96;
+      letter-spacing: 0;
+      margin-bottom: 20px;
+    }
+    .lead {
+      color: var(--muted-2);
+      font-size: clamp(18px, 2.2vw, 22px);
+      max-width: 650px;
+      margin-bottom: 28px;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .hero-note {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .hero-note span {
+      padding: 6px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255,255,255,.04);
+    }
+
+    .phone-frame {
+      width: min(100%, 440px);
+      margin-left: auto;
+      border: 1px solid rgba(139,92,246,.34);
+      border-radius: 34px;
+      padding: 16px;
+      background: linear-gradient(180deg, rgba(21,27,43,.95), rgba(8,12,20,.96));
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+    .phone-frame::before {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      background: linear-gradient(135deg, rgba(139,92,246,.25), transparent 42%, rgba(34,197,94,.12));
+      pointer-events: none;
+    }
+    .mock-screen {
+      position: relative;
+      z-index: 1;
+      border-radius: 24px;
+      background: #0c111c;
+      border: 1px solid var(--line);
+      padding: 18px;
+    }
+    .mock-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .mock-title strong { display: block; font-size: 18px; }
+    .mock-title span { display: block; color: var(--muted); font-size: 12px; }
+    .mock-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      background: var(--grad);
+    }
+    .mock-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .mock-kpi, .mock-wide {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(21,27,43,.9), rgba(17,24,39,.9));
+      padding: 13px;
+    }
+    .mock-kpi small {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+    .mock-kpi strong { display: block; font-size: 18px; line-height: 1.1; }
+    .good { color: #4ade80; }
+    .bad { color: #f87171; }
+    .gold { color: #facc15; }
+    .blue { color: #60a5fa; }
+    .mock-wide {
+      margin-top: 10px;
+      display: grid;
+      gap: 10px;
+    }
+    .progress {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.08);
+      overflow: hidden;
+    }
+    .progress span {
+      display: block;
+      height: 100%;
+      width: var(--value);
+      border-radius: inherit;
+      background: var(--grad);
+    }
+
+    .section-head {
+      max-width: 760px;
+      margin-bottom: 26px;
+    }
+    .section-head.center {
+      margin-left: auto;
+      margin-right: auto;
+      text-align: center;
+    }
+    h2 {
+      font-size: clamp(30px, 4vw, 48px);
+      line-height: 1.08;
+      letter-spacing: 0;
+      margin-bottom: 12px;
+    }
+    .section-head p {
+      color: var(--muted-2);
+      font-size: 18px;
+      margin-bottom: 0;
+    }
+    .band {
+      border-top: 1px solid rgba(255,255,255,.06);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      background: rgba(255,255,255,.025);
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .card-grid.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 22px;
+      background: linear-gradient(180deg, rgba(17,24,39,.92), rgba(21,27,43,.78));
+      box-shadow: 0 12px 32px rgba(0,0,0,.18);
+    }
+    .card .icon {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 15px;
+      background: rgba(139,92,246,.14);
+      border: 1px solid rgba(139,92,246,.24);
+      font-size: 22px;
+      margin-bottom: 14px;
+    }
+    .card h3 { font-size: 20px; margin-bottom: 8px; }
+    .card p, .card li { color: var(--muted); }
+    .pain-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+    .pain-list li {
+      min-height: 68px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.04);
+      padding: 14px;
+      color: var(--muted-2);
+      font-weight: 700;
+    }
+    .pain-list li::before {
+      content: "!";
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 9px;
+      color: #fecaca;
+      background: rgba(239,68,68,.14);
+      border: 1px solid rgba(239,68,68,.24);
+      font-weight: 950;
+    }
+
+    .solution-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .feature-pill {
+      min-height: 70px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,.04);
+      color: var(--muted-2);
+      font-weight: 800;
+    }
+    .feature-pill span {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 10px;
+      background: rgba(59,130,246,.16);
+    }
+
+    .dashboard-preview {
+      border: 1px solid rgba(139,92,246,.26);
+      border-radius: 28px;
+      background:
+        linear-gradient(135deg, rgba(139,92,246,.12), rgba(59,130,246,.06)),
+        rgba(17,24,39,.72);
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+    .preview-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .preview-dot { display: flex; gap: 6px; }
+    .preview-dot span { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,.20); }
+    .preview-layout {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .preview-card {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(11,15,23,.72);
+      padding: 16px;
+      min-height: 120px;
+    }
+    .preview-card.large {
+      grid-column: span 2;
+      min-height: 180px;
+    }
+    .preview-card small {
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .preview-card strong {
+      display: block;
+      font-size: 25px;
+      margin: 8px 0;
+      line-height: 1.1;
+    }
+
+    .steps {
+      counter-reset: step;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 16px;
+    }
+    .step {
+      counter-increment: step;
+      position: relative;
+      padding-top: 56px;
+    }
+    .step::before {
+      content: counter(step);
+      position: absolute;
+      top: 0;
+      left: 22px;
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      background: var(--grad);
+      font-weight: 950;
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .testimonial-card {
+      position: relative;
+      min-height: 260px;
+      border: 1px solid rgba(139,92,246,.20);
+      border-radius: 24px;
+      padding: 22px;
+      background:
+        linear-gradient(180deg, rgba(17,24,39,.94), rgba(21,27,43,.78)),
+        radial-gradient(circle at top left, rgba(139,92,246,.12), transparent 18rem);
+      box-shadow: 0 14px 38px rgba(0,0,0,.20);
+    }
+    .testimonial-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .testimonial-person {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .testimonial-avatar {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 15px;
+      background: var(--grad);
+      color: #fff;
+      font-weight: 950;
+      box-shadow: 0 10px 24px rgba(139,92,246,.20);
+    }
+    .testimonial-person strong {
+      display: block;
+      font-size: 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .testimonial-person span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .rating {
+      color: #facc15;
+      font-size: 13px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+    .testimonial-card p {
+      color: var(--muted-2);
+      margin-bottom: 0;
+    }
+
+    .launch-price {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      border: 1px solid rgba(250,204,21,.34);
+      border-radius: 28px;
+      padding: 28px;
+      background:
+        linear-gradient(135deg, rgba(250,204,21,.13), rgba(139,92,246,.12)),
+        rgba(17,24,39,.78);
+      box-shadow: 0 18px 46px rgba(0,0,0,.20);
+    }
+    .launch-price h2 {
+      font-size: clamp(28px, 3vw, 40px);
+      margin-bottom: 10px;
+    }
+    .launch-price p {
+      max-width: 760px;
+      color: var(--muted-2);
+      margin-bottom: 0;
+    }
+    .launch-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 30px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      color: #fde68a;
+      background: rgba(250,204,21,.12);
+      border: 1px solid rgba(250,204,21,.26);
+      font-size: 12px;
+      font-weight: 950;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 12px;
+    }
+    .launch-price .btn {
+      flex: 0 0 auto;
+      white-space: nowrap;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      align-items: stretch;
+    }
+    .price-card {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      background: linear-gradient(180deg, rgba(17,24,39,.96), rgba(21,27,43,.86));
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      min-height: 360px;
+      box-shadow: 0 12px 34px rgba(0,0,0,.20);
+    }
+    .price-card.featured {
+      border-color: rgba(250,204,21,.55);
+      box-shadow: 0 20px 60px rgba(250,204,21,.12), var(--shadow);
+      transform: translateY(-8px);
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      min-height: 28px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(250,204,21,.16);
+      color: #fde68a;
+      border: 1px solid rgba(250,204,21,.32);
+      font-size: 12px;
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+    .price-card h3 { font-size: 24px; margin-bottom: 8px; }
+    .price {
+      font-size: clamp(32px, 4vw, 42px);
+      font-weight: 950;
+      line-height: 1;
+      margin: 10px 0;
+    }
+    .price span { font-size: 15px; color: var(--muted); font-weight: 800; }
+    .price-card p { color: var(--muted-2); margin-bottom: 22px; }
+    .price-card .btn { margin-top: auto; width: 100%; }
+
+    .guarantee {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+      gap: 18px;
+      border: 1px solid rgba(34,197,94,.26);
+      border-radius: 26px;
+      background: linear-gradient(135deg, rgba(34,197,94,.12), rgba(59,130,246,.05));
+      padding: 24px;
+    }
+    .seal {
+      width: 72px;
+      height: 72px;
+      display: grid;
+      place-items: center;
+      border-radius: 22px;
+      background: rgba(34,197,94,.16);
+      border: 1px solid rgba(34,197,94,.28);
+      font-size: 34px;
+    }
+    .guarantee p { color: var(--muted-2); margin-bottom: 0; }
+
+    .faq {
+      display: grid;
+      gap: 10px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    details {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,.04);
+      padding: 0;
+      overflow: hidden;
+    }
+    summary {
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px;
+      cursor: pointer;
+      font-weight: 850;
+      list-style: none;
+    }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: "+"; color: var(--purple-2); font-size: 22px; }
+    details[open] summary::after { content: "-"; }
+    details p {
+      margin: 0;
+      padding: 0 18px 18px;
+      color: var(--muted);
+    }
+
+    .final-cta {
+      text-align: center;
+      border: 1px solid rgba(139,92,246,.30);
+      border-radius: 30px;
+      background: var(--grad-soft);
+      padding: 48px 24px;
+      box-shadow: var(--shadow);
+    }
+    .final-cta p {
+      color: var(--muted-2);
+      max-width: 620px;
+      margin: 0 auto 22px;
+      font-size: 18px;
+    }
+    footer {
+      padding: 34px 0;
+      color: var(--muted);
+      border-top: 1px solid rgba(255,255,255,.06);
+      font-size: 14px;
+    }
+
+    .activity-toast {
+      position: fixed;
+      left: 22px;
+      bottom: calc(22px + env(safe-area-inset-bottom, 0px));
+      z-index: 50;
+      width: min(380px, calc(100vw - 44px));
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 12px;
+      align-items: center;
+      padding: 15px 16px;
+      border: 1px solid rgba(139,92,246,.45);
+      border-radius: 20px;
+      color: var(--text);
+      background:
+        linear-gradient(135deg, rgba(139,92,246,.16), rgba(59,130,246,.10)),
+        rgba(11,15,23,.94);
+      box-shadow: 0 18px 46px rgba(0,0,0,.36), 0 0 28px rgba(139,92,246,.12);
+      opacity: 0;
+      transform: translateY(18px);
+      pointer-events: none;
+      transition: opacity .34s ease, transform .34s ease;
+    }
+    .activity-toast.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .activity-icon {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      color: #ddd6fe;
+      background: rgba(139,92,246,.18);
+      border: 1px solid rgba(139,92,246,.28);
+      font-weight: 950;
+    }
+    .activity-toast strong {
+      display: block;
+      font-size: 13px;
+      color: #ddd6fe;
+      margin-bottom: 2px;
+    }
+    .activity-toast span {
+      display: block;
+      color: var(--muted-2);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    @media (max-width: 920px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .phone-frame { margin: 0 auto; }
+      .card-grid, .card-grid.four, .pricing-grid, .steps { grid-template-columns: 1fr; }
+      .testimonials-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .launch-price { align-items: flex-start; flex-direction: column; }
+      .price-card.featured { transform: none; }
+      .solution-grid, .preview-layout { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .preview-card.large { grid-column: span 2; }
+      .nav-links a:not(.btn) { display: none; }
+    }
+    @media (max-width: 560px) {
+      .container { width: min(100% - 28px, 1120px); }
+      .section { padding: 56px 0; }
+      .hero { padding: 62px 0 54px; }
+      .nav-inner { height: 66px; }
+      .brand span { display: none; }
+      .hero-actions .btn, .nav-links .btn { width: 100%; }
+      .nav-links { flex: 1; justify-content: flex-end; }
+      .nav-links .btn { width: auto; min-height: 42px; padding: 10px 12px; font-size: 13px; }
+      .pain-list, .solution-grid, .preview-layout, .mock-grid { grid-template-columns: 1fr; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .preview-card.large { grid-column: span 1; }
+      .guarantee { grid-template-columns: 1fr; text-align: left; }
+      .launch-price { padding: 22px; }
+      .launch-price .btn { width: 100%; white-space: normal; }
+      .price-card { min-height: auto; }
+      .phone-frame { border-radius: 26px; padding: 10px; }
+      .mock-screen { border-radius: 20px; padding: 14px; }
+      .activity-toast {
+        left: 14px;
+        bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+        width: calc(100vw - 28px);
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="#top" aria-label="Mente Organizada">
+        <span class="brand-mark">🧠</span>
+        <span>Mente Organizada</span>
+      </a>
+      <nav class="nav-links" aria-label="Navegação">
+        <a href="#beneficios">Benefícios</a>
+        <a href="#como-funciona">Como funciona</a>
+        <a href="#planos" class="btn btn-secondary">Ver planos</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow">Painel financeiro, metas e disciplina semanal</div>
+          <h1>Organize sua mente. Controle seu dinheiro.</h1>
+          <p class="lead">O app simples para acompanhar entradas, saídas, valores guardados, metas e objetivos semanais em um só lugar.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary js-scroll-plans" href="#planos">Começar agora</a>
+            <a class="btn btn-secondary" href="#mockup">Ver como funciona</a>
+          </div>
+          <div class="hero-note">
+            <span>Login por e-mail e senha</span>
+            <span>Dados salvos na sua conta</span>
+            <span>Acesso pelo celular e computador</span>
+          </div>
+        </div>
+
+        <div class="phone-frame" aria-label="Prévia do app Mente Organizada">
+          <div class="mock-screen">
+            <div class="mock-top">
+              <div class="mock-title">
+                <strong>Seu painel de clareza</strong>
+                <span>Hoje você escolhe controle ou automático?</span>
+              </div>
+              <div class="mock-avatar">✓</div>
+            </div>
+            <div class="mock-grid">
+              <div class="mock-kpi">
+                <small>Entradas</small>
+                <strong class="good">R$ 3.500</strong>
+              </div>
+              <div class="mock-kpi">
+                <small>Saídas</small>
+                <strong class="bad">R$ 1.940</strong>
+              </div>
+              <div class="mock-kpi">
+                <small>Guardado</small>
+                <strong class="gold">R$ 420</strong>
+              </div>
+              <div class="mock-kpi">
+                <small>Saldo livre</small>
+                <strong class="blue">R$ 1.140</strong>
+              </div>
+            </div>
+            <div class="mock-wide">
+              <div>
+                <small class="gold">Meta principal</small>
+                <strong>Reserva de emergência</strong>
+              </div>
+              <div class="progress" aria-label="Meta 42% concluída"><span style="--value:42%"></span></div>
+              <small style="color:var(--muted)">42% concluído</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section band">
+      <div class="container">
+        <div class="section-head">
+          <h2>Seu dinheiro não desaparece. Ele só vai para onde você não está olhando.</h2>
+          <p>O problema quase nunca é falta de vontade. É falta de clareza para ver o que está acontecendo no dia a dia.</p>
+        </div>
+        <ul class="pain-list">
+          <li>Você recebe dinheiro, mas não sabe para onde ele vai.</li>
+          <li>Promete guardar, mas esquece no meio do mês.</li>
+          <li>Cria metas, mas abandona quando a rotina aperta.</li>
+          <li>Começa a semana motivado e termina no automático.</li>
+          <li>Falta clareza sobre dinheiro, rotina e prioridades.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head center">
+          <h2>Um lugar simples para organizar dinheiro, metas e rotina.</h2>
+          <p>O Mente Organizada reúne as informações que você precisa para parar de viver no improviso.</p>
+        </div>
+        <div class="solution-grid">
+          <div class="feature-pill"><span>↗</span> Controle de entradas</div>
+          <div class="feature-pill"><span>↘</span> Controle de saídas</div>
+          <div class="feature-pill"><span>◆</span> Valores guardados</div>
+          <div class="feature-pill"><span>●</span> Saldo livre</div>
+          <div class="feature-pill"><span>★</span> Metas e sonhos</div>
+          <div class="feature-pill"><span>✓</span> Objetivos semanais</div>
+          <div class="feature-pill"><span>✦</span> Frases motivacionais</div>
+          <div class="feature-pill"><span>@</span> Dados sincronizados</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section band" id="mockup">
+      <div class="container">
+        <div class="section-head center">
+          <h2>Um dashboard para enxergar sua vida com mais clareza.</h2>
+          <p>Sem planilha complicada. Só o essencial para acompanhar sua evolução.</p>
+        </div>
+        <div class="dashboard-preview">
+          <div class="preview-bar">
+            <strong>Mente Organizada</strong>
+            <div class="preview-dot"><span></span><span></span><span></span></div>
+          </div>
+          <div class="preview-layout">
+            <div class="preview-card">
+              <small>Entradas</small>
+              <strong class="good">R$ 4.200</strong>
+              <p>Dinheiro que chegou.</p>
+            </div>
+            <div class="preview-card">
+              <small>Saídas</small>
+              <strong class="bad">R$ 2.350</strong>
+              <p>Para onde foi.</p>
+            </div>
+            <div class="preview-card">
+              <small>Guardado</small>
+              <strong class="gold">R$ 600</strong>
+              <p>Seu futuro em construção.</p>
+            </div>
+            <div class="preview-card">
+              <small>Saldo livre</small>
+              <strong class="blue">R$ 1.250</strong>
+              <p>Disponível agora.</p>
+            </div>
+            <div class="preview-card large">
+              <small>Meta principal</small>
+              <strong>Comprar notebook</strong>
+              <div class="progress"><span style="--value:64%"></span></div>
+              <p>64% concluído. Desejo com plano vira direção.</p>
+            </div>
+            <div class="preview-card large">
+              <small>Objetivos da semana</small>
+              <strong>5 de 7</strong>
+              <div class="progress"><span style="--value:71%"></span></div>
+              <p>Sua disciplina está ficando visível.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="beneficios">
+      <div class="container">
+        <div class="section-head center">
+          <h2>O que muda quando você começa a acompanhar.</h2>
+          <p>O app não promete mágica. Ele entrega clareza, constância e um sistema simples para você se organizar.</p>
+        </div>
+        <div class="card-grid four">
+          <article class="card">
+            <div class="icon">💰</div>
+            <h3>Clareza financeira</h3>
+            <p>Veja entradas, saídas, guardado e saldo livre sem precisar montar uma planilha.</p>
+          </article>
+          <article class="card">
+            <div class="icon">🎯</div>
+            <h3>Metas visíveis</h3>
+            <p>Transforme sonhos de consumo e objetivos pessoais em números acompanháveis.</p>
+          </article>
+          <article class="card">
+            <div class="icon">🔥</div>
+            <h3>Disciplina semanal</h3>
+            <p>Crie objetivos da semana e acompanhe a porcentagem do que você realmente cumpriu.</p>
+          </article>
+          <article class="card">
+            <div class="icon">🔐</div>
+            <h3>Acesso em qualquer dispositivo</h3>
+            <p>Entre com seu e-mail e senha para acessar seus dados pelo celular ou computador.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Relatos de prova social -->
+    <section class="section band" id="relatos">
+      <div class="container">
+        <div class="section-head center">
+          <h2>Relatos de quem testou o Mente Organizada</h2>
+          <p>Pessoas que testaram o app destacaram principalmente clareza, simplicidade e facilidade para acompanhar dinheiro e metas.</p>
+        </div>
+        <div class="testimonials-grid">
+          <article class="testimonial-card">
+            <div class="testimonial-top">
+              <div class="testimonial-person">
+                <div class="testimonial-avatar">C</div>
+                <div>
+                  <strong>Carlos G****</strong>
+                  <span>Teste do app</span>
+                </div>
+              </div>
+              <div class="rating" aria-label="Nota 5.0 de 5">★★★★★ 5.0</div>
+            </div>
+            <p>“Eu gostei porque em poucos minutos consegui ver quanto tinha entrado, quanto saiu e quanto ainda estava livre. Ficou muito mais claro do que tentar controlar tudo de cabeça.”</p>
+          </article>
+
+          <article class="testimonial-card">
+            <div class="testimonial-top">
+              <div class="testimonial-person">
+                <div class="testimonial-avatar">M</div>
+                <div>
+                  <strong>Mariana S****</strong>
+                  <span>Teste do app</span>
+                </div>
+              </div>
+              <div class="rating" aria-label="Nota 4.5 de 5">★★★★☆ 4.5</div>
+            </div>
+            <p>“A parte de metas me ajudou bastante. Antes eu só pensava no que queria comprar, agora consigo colocar uma meta e acompanhar o progresso.”</p>
+          </article>
+
+          <article class="testimonial-card">
+            <div class="testimonial-top">
+              <div class="testimonial-person">
+                <div class="testimonial-avatar">J</div>
+                <div>
+                  <strong>João P****</strong>
+                  <span>Teste do app</span>
+                </div>
+              </div>
+              <div class="rating" aria-label="Nota 4.0 de 5">★★★★☆ 4.0</div>
+            </div>
+            <p>“Gostei da simplicidade. Não parece aqueles aplicativos complicados de banco. É direto: entrada, saída, guardado e objetivo.”</p>
+          </article>
+
+          <article class="testimonial-card">
+            <div class="testimonial-top">
+              <div class="testimonial-person">
+                <div class="testimonial-avatar">A</div>
+                <div>
+                  <strong>Ana L****</strong>
+                  <span>Teste do app</span>
+                </div>
+              </div>
+              <div class="rating" aria-label="Nota 5.0 de 5">★★★★★ 5.0</div>
+            </div>
+            <p>“O Modo Caverna deixou o app diferente. Não é só dinheiro, também ajuda a lembrar dos objetivos da semana.”</p>
+          </article>
+
+          <article class="testimonial-card">
+            <div class="testimonial-top">
+              <div class="testimonial-person">
+                <div class="testimonial-avatar">B</div>
+                <div>
+                  <strong>Bruno M****</strong>
+                  <span>Teste do app</span>
+                </div>
+              </div>
+              <div class="rating" aria-label="Nota 4.5 de 5">★★★★☆ 4.5</div>
+            </div>
+            <p>“Testei no celular e no computador e os dados continuaram salvos. Isso passa mais confiança para usar no dia a dia.”</p>
+          </article>
+
+          <article class="testimonial-card">
+            <div class="testimonial-top">
+              <div class="testimonial-person">
+                <div class="testimonial-avatar">C</div>
+                <div>
+                  <strong>Camila R****</strong>
+                  <span>Teste do app</span>
+                </div>
+              </div>
+              <div class="rating" aria-label="Nota 5.0 de 5">★★★★★ 5.0</div>
+            </div>
+            <p>“O que mais gostei foi a sensação de organização. Ver tudo separado em cards deixa mais fácil entender minha situação.”</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section band" id="como-funciona">
+      <div class="container">
+        <div class="section-head center">
+          <h2>Como funciona</h2>
+          <p>Você começa em poucos minutos e usa o mesmo e-mail da compra para liberar sua conta.</p>
+        </div>
+        <div class="steps">
+          <article class="card step">
+            <h3>Escolha seu plano</h3>
+            <p>Selecione mensal, trimestral ou anual de acordo com seu momento.</p>
+          </article>
+          <article class="card step">
+            <h3>Crie sua conta</h3>
+            <p>Use o mesmo e-mail da compra para acessar o Mente Organizada.</p>
+          </article>
+          <article class="card step">
+            <h3>Acompanhe sua evolução</h3>
+            <p>Registre seus dados, revise a semana e mantenha suas metas visíveis.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Aviso de preço de lançamento -->
+    <section class="section" id="preco-lancamento">
+      <div class="container">
+        <div class="launch-price">
+          <div>
+            <div class="launch-label">Preço de lançamento</div>
+            <h2>Preço de lançamento</h2>
+            <p>Os valores atuais fazem parte da fase inicial do Mente Organizada. Conforme novas funções, melhorias e automações forem adicionadas, os planos poderão passar por reajuste. Quem entrar agora garante o valor atual enquanto mantiver a assinatura ativa.</p>
+          </div>
+          <a class="btn btn-primary js-scroll-plans" href="#planos">Aproveitar preço atual</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="planos">
+      <div class="container">
+        <div class="section-head center">
+          <h2>Escolha seu plano</h2>
+          <p>Comece hoje a organizar dinheiro, metas e rotina em um painel simples.</p>
+        </div>
+        <div class="pricing-grid">
+          <article class="price-card">
+            <h3>Plano Mensal</h3>
+            <div class="price">R$ 14,90<span>/mês</span></div>
+            <p>Para começar hoje e testar sem compromisso.</p>
+            <a class="btn btn-primary" href="https://pay.cakto.com.br/s7n555n_912417" target="_blank" rel="noopener">Assinar mensal</a>
+          </article>
+
+          <article class="price-card">
+            <h3>Plano Trimestral</h3>
+            <div class="price">R$ 39,90<span> a cada 3 meses</span></div>
+            <p>Para quem quer criar consistência nos próximos meses.</p>
+            <a class="btn btn-primary" href="https://pay.cakto.com.br/bdi78vd" target="_blank" rel="noopener">Assinar trimestral</a>
+          </article>
+
+          <article class="price-card featured">
+            <span class="badge">Melhor escolha</span>
+            <h3>Plano Anual</h3>
+            <div class="price">R$ 97,00<span>/ano</span></div>
+            <p>Melhor escolha para economizar e manter o foco o ano todo.</p>
+            <a class="btn btn-gold" href="https://pay.cakto.com.br/y4sa2g6" target="_blank" rel="noopener">Assinar anual</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section band">
+      <div class="container">
+        <div class="guarantee">
+          <div class="seal">✓</div>
+          <div>
+            <h2>Garantia de 7 dias</h2>
+            <p>Teste o Mente Organizada por 7 dias. Se não fizer sentido para você, basta solicitar reembolso dentro do prazo de garantia.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head center">
+          <h2>Perguntas frequentes</h2>
+          <p>O essencial antes de começar.</p>
+        </div>
+        <div class="faq">
+          <details>
+            <summary>Preciso instalar algo?</summary>
+            <p>Não. O app funciona pelo navegador.</p>
+          </details>
+          <details>
+            <summary>Posso acessar pelo celular e computador?</summary>
+            <p>Sim. Use o mesmo e-mail e senha para acessar seus dados em qualquer dispositivo.</p>
+          </details>
+          <details>
+            <summary>Meus dados ficam salvos?</summary>
+            <p>Sim. Seus dados ficam salvos na sua conta.</p>
+          </details>
+          <details>
+            <summary>Preciso usar o mesmo e-mail da compra?</summary>
+            <p>Sim. O acesso é liberado para o e-mail usado na compra.</p>
+          </details>
+          <details>
+            <summary>O pagamento é recorrente?</summary>
+            <p>Sim. Existem planos mensal, trimestral e anual.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="final-cta">
+          <h2>Comece hoje a organizar sua mente e seu dinheiro.</h2>
+          <p>Mais clareza para decidir, mais constância para cumprir e um painel simples para acompanhar sua evolução.</p>
+          <a class="btn btn-primary js-scroll-plans" href="#planos">Escolher meu plano</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <strong>Mente Organizada</strong> · Organização financeira, metas pessoais e disciplina semanal.
+    </div>
+  </footer>
+
+  <div class="activity-toast" id="activityToast" role="status" aria-live="polite" aria-atomic="true">
+    <div class="activity-icon">✓</div>
+    <div>
+      <strong>Atividade recente</strong>
+      <span id="activityToastText">Carlos G**** começou com o plano mensal.</span>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.js-scroll-plans').forEach(button => {
+      button.addEventListener('click', event => {
+        const target = document.querySelector('#planos');
+        if (!target) return;
+        event.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    // Textos das notificações de atividade. Edite esta lista para trocar nomes ou mensagens.
+    const activityMessages = [
+      'Carlos G**** começou com o plano mensal.',
+      'Gabriel S**** começou com o plano mensal.',
+      'Rafael M**** começou com o plano mensal.',
+      'Amanda T**** começou com o plano mensal.',
+      'Lucas V**** iniciou sua organização financeira.',
+      'João P**** iniciou sua organização financeira.',
+      'Ana L**** acessou o Mente Organizada.',
+      'Pedro H**** ativou o acesso ao Mente Organizada.',
+      'Larissa C**** começou a acompanhar metas e dinheiro em um só lugar.',
+      'Camila R**** escolheu organizar sua rotina financeira.',
+      'Fernanda A**** começou a acompanhar entradas, saídas e metas.',
+      'Bruno M**** escolheu o plano trimestral.',
+      'Thiago B**** escolheu o plano trimestral.',
+      'Mariana S**** escolheu o plano anual para manter o foco por mais tempo.',
+      'Vitória N**** escolheu o plano anual.'
+    ];
+
+    const activityToast = document.querySelector('#activityToast');
+    const activityToastText = document.querySelector('#activityToastText');
+    let activityCount = 0;
+    let lastActivityIndex = -1;
+
+    const randomBetween = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+    function pickActivityMessage() {
+      if (activityMessages.length <= 1) return activityMessages[0];
+      let nextIndex = randomBetween(0, activityMessages.length - 1);
+      while (nextIndex === lastActivityIndex) {
+        nextIndex = randomBetween(0, activityMessages.length - 1);
+      }
+      lastActivityIndex = nextIndex;
+      return activityMessages[nextIndex];
+    }
+
+    function showActivityToast() {
+      if (!activityToast || !activityToastText || document.hidden) return;
+      activityToastText.textContent = pickActivityMessage();
+      activityToast.classList.add('is-visible');
+      window.setTimeout(() => activityToast.classList.remove('is-visible'), 6500);
+    }
+
+    function getNextActivityDelay() {
+      if (activityCount === 0) return 5000;
+      if (activityCount === 1) return randomBetween(105000, 135000);
+      return randomBetween(180000, 360000);
+    }
+
+    function scheduleActivityToast() {
+      window.setTimeout(() => {
+        showActivityToast();
+        activityCount += 1;
+
+        if (activityCount > 2 && Math.random() < 0.12) {
+          window.setTimeout(showActivityToast, randomBetween(20000, 45000));
+        }
+
+        scheduleActivityToast();
+      }, getNextActivityDelay());
+    }
+
+    scheduleActivityToast();
+  </script>
+</body>
+</html>
