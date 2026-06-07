@@ -269,6 +269,114 @@
       background: var(--grad);
     }
 
+    .app-showcase { position: relative; }
+    .showcase-header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+    .showcase-header .section-head { margin-bottom: 0; }
+    .showcase-track {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .showcase-card {
+      min-width: 0;
+      border: 1px solid rgba(139,92,246,.35);
+      border-radius: 26px;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(21,27,43,.96), rgba(11,15,23,.94));
+      box-shadow: 0 20px 52px rgba(0,0,0,.26), 0 0 30px rgba(139,92,246,.08);
+      transition: transform .35s ease, border-color .35s ease, box-shadow .35s ease;
+    }
+    .showcase-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(96,165,250,.58);
+      box-shadow: 0 26px 64px rgba(0,0,0,.34), 0 0 34px rgba(59,130,246,.13);
+    }
+    .showcase-media {
+      position: relative;
+      overflow: hidden;
+      background: #080c16;
+      border-bottom: 1px solid var(--line);
+    }
+    .showcase-media::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      box-shadow: inset 0 0 36px rgba(59,130,246,.12);
+    }
+    .showcase-media img {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 9 / 16;
+      object-fit: cover;
+      transition: transform .6s ease;
+    }
+    .showcase-card:hover .showcase-media img { transform: scale(1.012); }
+    .showcase-copy { padding: 20px; }
+    .showcase-copy h3 {
+      font-size: 20px;
+      line-height: 1.18;
+      margin-bottom: 8px;
+    }
+    .showcase-copy p {
+      color: var(--muted-2);
+      margin-bottom: 0;
+      font-size: 14px;
+    }
+    .showcase-controls {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .showcase-arrow {
+      width: 40px;
+      height: 40px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      color: var(--text);
+      background: rgba(255,255,255,.06);
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: background .2s ease, border-color .2s ease, transform .2s ease;
+    }
+    .showcase-arrow:hover {
+      background: rgba(139,92,246,.16);
+      border-color: rgba(139,92,246,.38);
+    }
+    .showcase-arrow:active { transform: scale(.96); }
+    .showcase-dots {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+    .showcase-dot {
+      width: 8px;
+      height: 8px;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(255,255,255,.25);
+      cursor: pointer;
+      transition: width .25s ease, background .25s ease;
+    }
+    .showcase-dot.is-active {
+      width: 26px;
+      background: var(--grad);
+    }
+
     .section-head {
       max-width: 760px;
       margin-bottom: 26px;
@@ -736,6 +844,29 @@
       line-height: 1.35;
     }
 
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity .65s ease, transform .65s ease;
+    }
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .card,
+    .feature-pill,
+    .testimonial-card,
+    .price-card {
+      transition: transform .3s ease, border-color .3s ease, box-shadow .3s ease;
+    }
+    .card:hover,
+    .feature-pill:hover,
+    .testimonial-card:hover,
+    .price-card:not(.featured):hover {
+      transform: translateY(-3px);
+      border-color: rgba(139,92,246,.34);
+    }
+
     @media (max-width: 920px) {
       .hero-grid { grid-template-columns: 1fr; }
       .phone-frame { margin: 0 auto; }
@@ -746,16 +877,41 @@
       .solution-grid, .preview-layout { grid-template-columns: repeat(2, minmax(0,1fr)); }
       .preview-card.large { grid-column: span 2; }
       .nav-links a:not(.btn) { display: none; }
+      .showcase-header { align-items: flex-start; }
+      .showcase-track {
+        display: flex;
+        gap: 14px;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        scroll-snap-type: x mandatory;
+        scroll-padding-inline: 2px;
+        scrollbar-width: none;
+        padding: 3px 2px 12px;
+      }
+      .showcase-track::-webkit-scrollbar { display: none; }
+      .showcase-card {
+        flex: 0 0 min(86%, 390px);
+        scroll-snap-align: center;
+      }
+      .showcase-controls { display: flex; }
     }
     @media (max-width: 560px) {
-      .container { width: min(100% - 28px, 1120px); }
+      .container { width: min(100% - 24px, 1120px); }
       .section { padding: 56px 0; }
-      .hero { padding: 62px 0 54px; }
-      .nav-inner { height: 66px; }
-      .brand span { display: none; }
+      .hero { padding: 48px 0 54px; }
+      .nav-inner { height: 58px; gap: 8px; }
+      .brand { flex: 1 1 auto; gap: 8px; min-width: 0; font-size: 14px; }
+      .brand-mark { width: 34px; height: 34px; border-radius: 11px; font-size: 16px; }
+      .brand span:last-child {
+        display: block;
+        max-width: 138px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
       .hero-actions .btn, .nav-links .btn { width: 100%; }
-      .nav-links { flex: 1; justify-content: flex-end; }
-      .nav-links .btn { width: auto; min-height: 42px; padding: 10px 12px; font-size: 13px; }
+      .nav-links { flex: 0 0 auto; justify-content: flex-end; }
+      .nav-links .btn { width: auto; min-height: 38px; padding: 8px 11px; border-radius: 11px; font-size: 12px; }
       .pain-list, .solution-grid, .preview-layout, .mock-grid { grid-template-columns: 1fr; }
       .testimonials-grid { grid-template-columns: 1fr; }
       .preview-card.large { grid-column: span 1; }
@@ -765,11 +921,31 @@
       .price-card { min-height: auto; }
       .phone-frame { border-radius: 26px; padding: 10px; }
       .mock-screen { border-radius: 20px; padding: 14px; }
+      .showcase-header { margin-bottom: 20px; }
+      .showcase-card { flex-basis: 91%; border-radius: 22px; }
+      .showcase-copy { padding: 17px; }
+      .showcase-copy h3 { font-size: 18px; }
       .activity-toast {
         left: 14px;
         bottom: calc(16px + env(safe-area-inset-bottom, 0px));
         width: calc(100vw - 28px);
         padding: 14px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
+      .reveal {
+        opacity: 1;
+        transform: none;
       }
     }
   </style>
@@ -843,6 +1019,74 @@
               <small style="color:var(--muted)">42% concluído</small>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section band app-showcase" id="por-dentro">
+      <div class="container">
+        <div class="showcase-header">
+          <div class="section-head">
+            <h2>Veja o Mente Organizada por dentro</h2>
+            <p>Controle seu dinheiro, acompanhe suas metas e mantenha sua rotina em um só lugar.</p>
+          </div>
+        </div>
+
+        <div class="showcase-track" id="showcaseTrack" aria-label="Telas do Mente Organizada">
+          <article class="showcase-card">
+            <div class="showcase-media">
+              <img
+                src="o-que-e-mente-organizada.png"
+                alt="O que é o Mente Organizada"
+                loading="lazy"
+                decoding="async"
+              >
+            </div>
+            <div class="showcase-copy">
+              <h3>Organize sua mente e sua rotina</h3>
+              <p>Tenha clareza do que precisa fazer e acompanhe sua evolução todos os dias.</p>
+            </div>
+          </article>
+
+          <article class="showcase-card">
+            <div class="showcase-media">
+              <img
+                src="controle-financeiro-movimentacoes.png"
+                alt="Controle financeiro e movimentações do Mente Organizada"
+                loading="lazy"
+                decoding="async"
+              >
+            </div>
+            <div class="showcase-copy">
+              <h3>Controle seu dinheiro de verdade</h3>
+              <p>Veja entradas, saídas, saldo livre, valores guardados e para onde seu dinheiro está indo.</p>
+            </div>
+          </article>
+
+          <article class="showcase-card">
+            <div class="showcase-media">
+              <img
+                src="metas-objetivos-semanais.png"
+                alt="Metas financeiras e objetivos semanais no Mente Organizada"
+                loading="lazy"
+                decoding="async"
+              >
+            </div>
+            <div class="showcase-copy">
+              <h3>Acompanhe metas e objetivos semanais</h3>
+              <p>Crie metas financeiras, defina sua meta principal e mantenha o foco com objetivos da semana.</p>
+            </div>
+          </article>
+        </div>
+
+        <div class="showcase-controls" aria-label="Controles das telas do aplicativo">
+          <button class="showcase-arrow" id="showcasePrevious" type="button" title="Tela anterior" aria-label="Tela anterior">←</button>
+          <div class="showcase-dots" aria-label="Selecionar tela">
+            <button class="showcase-dot is-active" type="button" data-showcase-index="0" aria-label="Mostrar primeira tela" aria-pressed="true"></button>
+            <button class="showcase-dot" type="button" data-showcase-index="1" aria-label="Mostrar segunda tela" aria-pressed="false"></button>
+            <button class="showcase-dot" type="button" data-showcase-index="2" aria-label="Mostrar terceira tela" aria-pressed="false"></button>
+          </div>
+          <button class="showcase-arrow" id="showcaseNext" type="button" title="Próxima tela" aria-label="Próxima tela">→</button>
         </div>
       </div>
     </section>
@@ -1203,6 +1447,77 @@
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     });
+
+    const showcaseTrack = document.querySelector('#showcaseTrack');
+    const showcaseCards = showcaseTrack ? [...showcaseTrack.querySelectorAll('.showcase-card')] : [];
+    const showcaseDots = [...document.querySelectorAll('.showcase-dot')];
+    const showcasePrevious = document.querySelector('#showcasePrevious');
+    const showcaseNext = document.querySelector('#showcaseNext');
+    let activeShowcaseIndex = 0;
+    let showcaseScrollFrame = null;
+
+    function setActiveShowcase(index) {
+      if (!showcaseCards.length) return;
+      activeShowcaseIndex = (index + showcaseCards.length) % showcaseCards.length;
+      showcaseDots.forEach((dot, dotIndex) => {
+        const isActive = dotIndex === activeShowcaseIndex;
+        dot.classList.toggle('is-active', isActive);
+        dot.setAttribute('aria-pressed', String(isActive));
+      });
+    }
+
+    function scrollToShowcase(index) {
+      if (!showcaseTrack || !showcaseCards.length) return;
+      const normalizedIndex = (index + showcaseCards.length) % showcaseCards.length;
+      const targetCard = showcaseCards[normalizedIndex];
+      setActiveShowcase(normalizedIndex);
+      showcaseTrack.scrollTo({
+        left: targetCard.offsetLeft - showcaseCards[0].offsetLeft,
+        behavior: 'smooth'
+      });
+    }
+
+    showcasePrevious?.addEventListener('click', () => scrollToShowcase(activeShowcaseIndex - 1));
+    showcaseNext?.addEventListener('click', () => scrollToShowcase(activeShowcaseIndex + 1));
+
+    showcaseDots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        scrollToShowcase(Number(dot.dataset.showcaseIndex || 0));
+      });
+    });
+
+    showcaseTrack?.addEventListener('scroll', () => {
+      if (showcaseScrollFrame) cancelAnimationFrame(showcaseScrollFrame);
+      showcaseScrollFrame = requestAnimationFrame(() => {
+        const closestIndex = showcaseCards.reduce((closest, card, index) => {
+          const distance = Math.abs((card.offsetLeft - showcaseCards[0].offsetLeft) - showcaseTrack.scrollLeft);
+          return distance < closest.distance ? { index, distance } : closest;
+        }, { index: 0, distance: Number.POSITIVE_INFINITY }).index;
+        setActiveShowcase(closestIndex);
+      });
+    }, { passive: true });
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const revealElements = document.querySelectorAll('main > .section > .container');
+
+    revealElements.forEach(element => element.classList.add('reveal'));
+
+    if (prefersReducedMotion || !('IntersectionObserver' in window)) {
+      revealElements.forEach(element => element.classList.add('is-visible'));
+    } else {
+      const revealObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        });
+      }, {
+        threshold: 0.08,
+        rootMargin: '0px 0px -45px'
+      });
+
+      revealElements.forEach(element => revealObserver.observe(element));
+    }
 
     // Textos das notificações de atividade. Edite esta lista para trocar nomes ou mensagens.
     const activityMessages = [
