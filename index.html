@@ -55,7 +55,11 @@
       background: rgba(11,15,23,.78);
       border-bottom: 1px solid rgba(255,255,255,.07);
       backdrop-filter: blur(18px);
+      transform: translateY(0);
+      transition: transform .25s ease;
+      will-change: transform;
     }
+    .nav.header-hidden { transform: translateY(calc(-100% - 1px)); }
     .nav-inner {
       height: 72px;
       display: flex;
@@ -1439,6 +1443,28 @@
   </div>
 
   <script>
+    const pageHeader = document.querySelector('.nav');
+    let lastScrollY = Math.max(window.scrollY, 0);
+    let headerScrollFrame = null;
+
+    function updateHeaderVisibility() {
+      const currentScrollY = Math.max(window.scrollY, 0);
+
+      if (currentScrollY < 20 || currentScrollY < lastScrollY) {
+        pageHeader?.classList.remove('header-hidden');
+      } else if (currentScrollY > lastScrollY && currentScrollY > 80) {
+        pageHeader?.classList.add('header-hidden');
+      }
+
+      lastScrollY = currentScrollY;
+      headerScrollFrame = null;
+    }
+
+    window.addEventListener('scroll', () => {
+      if (headerScrollFrame !== null) return;
+      headerScrollFrame = requestAnimationFrame(updateHeaderVisibility);
+    }, { passive: true });
+
     document.querySelectorAll('.js-scroll-plans').forEach(button => {
       button.addEventListener('click', event => {
         const target = document.querySelector('#planos');
